@@ -1,16 +1,35 @@
 [
   {
-    "sha": "HEAD",
+    "sha": "889b81965403cd81ad6db9cb9f7b668aebb65c1b",
     "author": "Oswi",
     "commit": {
       "date": "2025-09-09T19:28:01.000Z",
       "message": "prueba2 Commit",
-      "url": "https://github.com/Oswi142/proyecto-base/commit/HEAD"
+      "url": "https://github.com/Oswi142/proyecto-base/commit/889b81965403cd81ad6db9cb9f7b668aebb65c1b"
     },
     "stats": {
       "total": 2,
       "additions": 2,
       "deletions": 0,
+      "date": "2025-09-09"
+    },
+    "coverage": 100,
+    "test_count": 1,
+    "failed_tests": 0,
+    "conclusion": "success"
+  },
+  {
+    "sha": "HEAD",
+    "author": "Oswi",
+    "commit": {
+      "date": "2025-09-09T22:09:02.000Z",
+      "message": "prueba2.2 commit",
+      "url": "https://github.com/Oswi142/proyecto-base/commit/HEAD"
+    },
+    "stats": {
+      "total": 2,
+      "additions": 1,
+      "deletions": 1,
       "date": "2025-09-09"
     },
     "coverage": 100,
