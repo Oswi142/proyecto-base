@@ -22,3 +22,5 @@ Ejecutar pruebas de unidad solo una vez:
 npm run test-once
 
 prueba2
+
+prueba main
