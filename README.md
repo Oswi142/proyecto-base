@@ -25,4 +25,4 @@ prueba2.2
 
 prueba main2
 
-B1
+B1 - B2
