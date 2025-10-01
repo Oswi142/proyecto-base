@@ -92,7 +92,6 @@ function getCommitInfo(sha) {
       try {
         sh(`npx jest --coverage --json --outputFile=${outputPath} --passWithNoTests`);
       } catch {
-        // Jest puede devolver código distinto de 0 con tests fallidos; seguimos para leer el JSON.
       }
 
       if (fs.existsSync(outputPath)) {
@@ -179,7 +178,7 @@ function saveCommitData(entry) {
     }
   }
 
-  // Append del commit actual (no tocamos “penúltimos”: ya no hay placeholders)
+  // Append del commit actual
   commits.push(entry);
 
   // Orden por fecha de commit (ISO)
