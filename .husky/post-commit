@@ -1,3 +1,6 @@
+. "$(dirname -- "$0")/_/husky.sh"
+set -e
+
 node ./script/commitScript.js
 
 REPO_DIR="$(git rev-parse --show-toplevel)"
@@ -5,5 +8,5 @@ node "$REPO_DIR/script/commit-tracker.js"
 
 export HUSKY=0
 git add script/commit-history.json
-git commit --amend --no-edit 
+git commit --amend --no-edit --no-verify
 unset HUSKY

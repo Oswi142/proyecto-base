@@ -152,18 +152,96 @@
     "conclusion": "success"
   },
   {
-    "sha": "HEAD",
+    "sha": "d12361005ba611fc654d728087158359cdcad431",
     "author": "Oswi",
     "commit": {
       "date": "2025-09-14T22:55:50.000Z",
       "message": "cambio2",
-      "url": "https://github.com/Oswi142/proyecto-base/commit/HEAD"
+      "url": "https://github.com/Oswi142/proyecto-base/commit/d12361005ba611fc654d728087158359cdcad431"
     },
     "stats": {
       "total": 4,
       "additions": 3,
       "deletions": 1,
       "date": "2025-09-14"
+    },
+    "coverage": 100,
+    "test_count": 1,
+    "failed_tests": 0,
+    "conclusion": "success"
+  },
+  {
+    "sha": "c712390923c09a5366781ef0a77a023290211eb0",
+    "author": "Oswi",
+    "commit": {
+      "date": "2025-09-14T23:02:08.000Z",
+      "message": "hola",
+      "url": "https://github.com/Oswi142/proyecto-base/commit/c712390923c09a5366781ef0a77a023290211eb0"
+    },
+    "stats": {
+      "total": 5,
+      "additions": 4,
+      "deletions": 1,
+      "date": "2025-09-14"
+    },
+    "coverage": 100,
+    "test_count": 1,
+    "failed_tests": 0,
+    "conclusion": "success"
+  },
+  {
+    "sha": "HEAD",
+    "author": "Oswi",
+    "commit": {
+      "date": "2025-09-14T23:03:41.000Z",
+      "message": "chau",
+      "url": "https://github.com/Oswi142/proyecto-base/commit/HEAD"
+    },
+    "stats": {
+      "total": 1,
+      "additions": 1,
+      "deletions": 0,
+      "date": "2025-09-14"
+    },
+    "coverage": 100,
+    "test_count": 1,
+    "failed_tests": 0,
+    "conclusion": "success"
+  },
+  {
+    "sha": "491800e54c9a2028f026dfb807d598a7c0767741",
+    "author": "Oswi",
+    "branch": "chau1",
+    "commit": {
+      "date": "2025-10-01T00:29:41-04:00",
+      "message": "prueba #1",
+      "url": "https://github.com/Oswi142/proyecto-base/commit/491800e54c9a2028f026dfb807d598a7c0767741"
+    },
+    "stats": {
+      "total": 289,
+      "additions": 124,
+      "deletions": 165,
+      "date": "2025-10-01"
+    },
+    "coverage": 100,
+    "test_count": 1,
+    "failed_tests": 0,
+    "conclusion": "success"
+  },
+  {
+    "sha": "d67400f638affcdb7b9433a456f6512094bf8ed2",
+    "author": "Oswi",
+    "branch": "chau1",
+    "commit": {
+      "date": "2025-10-01T00:59:33-04:00",
+      "message": "prueba #2",
+      "url": "https://github.com/Oswi142/proyecto-base/commit/d67400f638affcdb7b9433a456f6512094bf8ed2"
+    },
+    "stats": {
+      "total": 7,
+      "additions": 4,
+      "deletions": 3,
+      "date": "2025-10-01"
     },
     "coverage": 100,
     "test_count": 1,
