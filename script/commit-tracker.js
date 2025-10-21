@@ -4,21 +4,10 @@ import { tmpdir } from "os";
 import path from "path";
 import crypto from "crypto";
 
-const HISTORY_DIR = "script";
-const MAIN_FILE = path.join(HISTORY_DIR, "commit-history-main.json");
-
-const HISTORY_EXCLUDE_GLOB = `${HISTORY_DIR}/commit-history*.json`;
+const DATA_FILE = "script/commit-history.json";
 
 function sh(cmd) {
   return execSync(cmd, { stdio: "pipe" }).toString().trim();
-}
-
-function ensureDir(p) {
-  try { fs.mkdirSync(p, { recursive: true }); } catch {}
-}
-
-function sanitizeBranchName(name) {
-  return (name || "unknown").replace(/[^a-zA-Z0-9._-]/g, "_");
 }
 
 function getRemoteHttpUrl() {
@@ -27,8 +16,7 @@ function getRemoteHttpUrl() {
     if (raw.startsWith("http")) return raw;
     const m = raw.match(/^git@([^:]+):(.+)$/);
     if (m) return `https://${m[1]}/${m[2]}`;
-  } catch {
-  }
+  } catch {}
   return "";
 }
 
@@ -58,21 +46,19 @@ function getCommitInfo(sha) {
         const firstParent = parents.split(" ")[0];
         if (firstParent) parentRef = firstParent;
       }
-    } catch {
-    }
+    } catch {}
 
     try {
       const diffStats = sh(
-        `git diff --stat ${parentRef} ${sha} -- ":!${HISTORY_EXCLUDE_GLOB}"`
+        `git diff --stat ${parentRef} ${sha} -- ":!${DATA_FILE}" ":!script/commit-history-*.json"`
       );
       const addM = diffStats.match(/(\d+)\s+insertion/);
       const delM = diffStats.match(/(\d+)\s+deletion/);
       additions = addM ? parseInt(addM[1], 10) : 0;
       deletions = delM ? parseInt(delM[1], 10) : 0;
     } catch {
-
       const showStats = sh(
-        `git show --stat ${sha} -- ":!${HISTORY_EXCLUDE_GLOB}"`
+        `git show --stat ${sha} -- ":!${DATA_FILE}" ":!script/commit-history-*.json"`
       );
       const addM = showStats.match(/(\d+)\s+insertion/);
       const delM = showStats.match(/(\d+)\s+deletion/);
@@ -94,11 +80,8 @@ function getCommitInfo(sha) {
     const outputPath = path.join(tempDir, `jest-results-${randomId}.json`);
     try {
       try {
-        sh(
-          `npx jest --coverage --json --outputFile=${outputPath} --passWithNoTests`
-        );
-      } catch {
-      }
+        sh(`npx jest --coverage --json --outputFile=${outputPath} --passWithNoTests`);
+      } catch {}
 
       if (fs.existsSync(outputPath)) {
         const jestResults = JSON.parse(fs.readFileSync(outputPath, "utf8"));
@@ -117,18 +100,12 @@ function getCommitInfo(sha) {
             covered += fileCovered;
           }
           if (total > 0) {
-            coverage = Math.round((covered / total) * 10000) / 100; // 2 decimales
+            coverage = Math.round(((covered / total) * 100) * 100) / 100;
           }
         }
 
-        conclusion =
-          testCount > 0 ? (failedTests > 0 ? "failure" : "success") : "neutral";
-
-        try {
-          fs.unlinkSync(outputPath);
-        } catch {}
-      } else {
-        console.warn("Advertencia: Jest no generó el archivo JSON de resultados.");
+        conclusion = testCount > 0 ? (failedTests > 0 ? "failure" : "success") : "neutral";
+        try { fs.unlinkSync(outputPath); } catch {}
       }
     } catch (err) {
       console.warn("Error al procesar resultados de pruebas:", err.message);
@@ -136,9 +113,7 @@ function getCommitInfo(sha) {
   }
 
   let branch = "";
-  try {
-    branch = sh("git rev-parse --abbrev-ref HEAD");
-  } catch {}
+  try { branch = sh("git rev-parse --abbrev-ref HEAD"); } catch {}
 
   const dateYmd = (commitDateIso || "").split("T")[0] || "";
 
@@ -164,48 +139,44 @@ function getCommitInfo(sha) {
   };
 }
 
-function loadHistory(filePath) {
-  if (fs.existsSync(filePath)) {
+function saveCommitData(entry) {
+  // --- Guardar en el archivo general (igual que antes) ---
+  let commits = [];
+  if (fs.existsSync(DATA_FILE)) {
     try {
-      const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-      return Array.isArray(data) ? data : [];
+      commits = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+      if (!Array.isArray(commits)) commits = [];
     } catch {
-      return [];
+      commits = [];
     }
   }
-  return [];
-}
-
-function saveHistory(filePath, commits) {
-  commits.sort((a, b) => new Date(a.commit.date) - new Date(b.commit.date));
-  fs.writeFileSync(filePath, JSON.stringify(commits, null, 2));
-}
-
-function appendEntry(filePath, entry) {
-  let commits = loadHistory(filePath);
   commits.push(entry);
-  saveHistory(filePath, commits);
-}
+  commits.sort((a, b) => new Date(a.commit.date) - new Date(b.commit.date));
+  fs.writeFileSync(DATA_FILE, JSON.stringify(commits, null, 2));
 
-function validateEntry(entry) {
-  if (entry.sha === "HEAD") {
-    throw new Error('Entrada inválida: sha="HEAD" está prohibido.');
-  }
-  if (entry.commit?.url && /\/commit\/HEAD$/.test(entry.commit.url)) {
-    throw new Error("Entrada inválida: la URL del commit termina en /commit/HEAD.");
-  }
-  if (entry.commit?.url && !entry.commit.url.endsWith(entry.sha)) {
-    throw new Error("Entrada inválida: la URL del commit no termina en el SHA.");
-  }
-  if (!entry.branch) {
-    throw new Error('Entrada inválida: falta el campo "branch".');
+  // --- NUEVO: Guardar también en el archivo por rama ---
+  if (entry.branch && entry.branch !== "HEAD") {
+    const branchFile = `script/commit-history-${entry.branch}.json`;
+    let branchCommits = [];
+    if (fs.existsSync(branchFile)) {
+      try {
+        branchCommits = JSON.parse(fs.readFileSync(branchFile, "utf8"));
+        if (!Array.isArray(branchCommits)) branchCommits = [];
+      } catch {
+        branchCommits = [];
+      }
+    }
+    branchCommits.push(entry);
+    branchCommits.sort((a, b) => new Date(a.commit.date) - new Date(b.commit.date));
+    fs.writeFileSync(branchFile, JSON.stringify(branchCommits, null, 2));
   }
 }
 
 try {
-  ensureDir(HISTORY_DIR);
+  if (!fs.existsSync(DATA_FILE)) {
+    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
+  }
 
-  // SHA real del commit recién creado (post-commit)
   const sha = sh("git rev-parse HEAD");
   if (!/^[0-9a-f]{7,40}$/i.test(sha)) {
     throw new Error(`SHA inválido: ${sha}`);
@@ -213,26 +184,7 @@ try {
 
   const entry = getCommitInfo(sha);
   if (!entry) throw new Error("No se pudo construir la entrada del commit.");
-
-  validateEntry(entry);
-
-  // Archivo de rama
-  const safeBranch = sanitizeBranchName(entry.branch);
-  const BRANCH_FILE = path.join(
-    HISTORY_DIR,
-    `commit-history-${safeBranch}.json`
-  );
-  if (!fs.existsSync(BRANCH_FILE)) {
-    fs.writeFileSync(BRANCH_FILE, JSON.stringify([], null, 2));
-  }
-  appendEntry(BRANCH_FILE, entry);
-
-  if (entry.branch === "main") {
-    if (!fs.existsSync(MAIN_FILE)) {
-      fs.writeFileSync(MAIN_FILE, JSON.stringify([], null, 2));
-    }
-    appendEntry(MAIN_FILE, entry);
-  }
+  saveCommitData(entry);
 } catch (error) {
   console.error("Error en el tracker:", error.message);
   process.exit(1);

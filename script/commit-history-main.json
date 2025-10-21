@@ -1,0 +1,42 @@
+[
+  {
+    "sha": "99ab82444795970b5276209f15d7c90ceefe801f",
+    "author": "Oswi",
+    "branch": "main",
+    "commit": {
+      "date": "2025-10-21T18:50:28-04:00",
+      "message": "retesting history commit",
+      "url": "https://github.com/Oswi142/proyecto-base/commit/99ab82444795970b5276209f15d7c90ceefe801f"
+    },
+    "stats": {
+      "total": 4,
+      "additions": 3,
+      "deletions": 1,
+      "date": "2025-10-21"
+    },
+    "coverage": 100,
+    "test_count": 1,
+    "failed_tests": 0,
+    "conclusion": "success"
+  },
+  {
+    "sha": "99ab82444795970b5276209f15d7c90ceefe801f",
+    "author": "Oswi",
+    "branch": "main",
+    "commit": {
+      "date": "2025-10-21T18:50:28-04:00",
+      "message": "retesting history commit",
+      "url": "https://github.com/Oswi142/proyecto-base/commit/99ab82444795970b5276209f15d7c90ceefe801f"
+    },
+    "stats": {
+      "total": 4,
+      "additions": 3,
+      "deletions": 1,
+      "date": "2025-10-21"
+    },
+    "coverage": 100,
+    "test_count": 1,
+    "failed_tests": 0,
+    "conclusion": "success"
+  }
+]
