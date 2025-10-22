@@ -347,5 +347,25 @@
     "test_count": 1,
     "failed_tests": 0,
     "conclusion": "success"
+  },
+  {
+    "sha": "120131e612b8972066c84c815aceb60f81818b4f",
+    "author": "Oswi",
+    "branch": "test-feature-2",
+    "commit": {
+      "date": "2025-10-21T21:21:47-04:00",
+      "message": "retest 2 without the creation of history branches",
+      "url": "https://github.com/Oswi142/proyecto-base/commit/120131e612b8972066c84c815aceb60f81818b4f"
+    },
+    "stats": {
+      "total": 2,
+      "additions": 2,
+      "deletions": 0,
+      "date": "2025-10-21"
+    },
+    "coverage": 100,
+    "test_count": 1,
+    "failed_tests": 0,
+    "conclusion": "success"
   }
 ]
