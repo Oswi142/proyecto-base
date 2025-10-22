@@ -100,7 +100,7 @@ function getCommitInfo(sha) {
             covered += fileCovered;
           }
           if (total > 0) {
-            coverage = Math.round(((covered / total) * 100) * 100) / 100;
+            coverage = Math.round(((covered / total) * 100) * 100) / 100; // 2 decimales
           }
         }
 
@@ -124,23 +124,22 @@ function getCommitInfo(sha) {
     commit: {
       date: commitDateIso,
       message: commitMessage,
-      url: commitUrl,
+      url: commitUrl
     },
     stats: {
       total: additions + deletions,
       additions,
       deletions,
-      date: dateYmd,
+      date: dateYmd
     },
     coverage,
     test_count: testCount,
     failed_tests: failedTests,
-    conclusion,
+    conclusion
   };
 }
 
 function saveCommitData(entry) {
-  // --- Guardar en el archivo general (igual que antes) ---
   let commits = [];
   if (fs.existsSync(DATA_FILE)) {
     try {
@@ -153,23 +152,6 @@ function saveCommitData(entry) {
   commits.push(entry);
   commits.sort((a, b) => new Date(a.commit.date) - new Date(b.commit.date));
   fs.writeFileSync(DATA_FILE, JSON.stringify(commits, null, 2));
-
-  // --- NUEVO: Guardar también en el archivo por rama ---
-  if (entry.branch && entry.branch !== "HEAD") {
-    const branchFile = `script/commit-history-${entry.branch}.json`;
-    let branchCommits = [];
-    if (fs.existsSync(branchFile)) {
-      try {
-        branchCommits = JSON.parse(fs.readFileSync(branchFile, "utf8"));
-        if (!Array.isArray(branchCommits)) branchCommits = [];
-      } catch {
-        branchCommits = [];
-      }
-    }
-    branchCommits.push(entry);
-    branchCommits.sort((a, b) => new Date(a.commit.date) - new Date(b.commit.date));
-    fs.writeFileSync(branchFile, JSON.stringify(branchCommits, null, 2));
-  }
 }
 
 try {
@@ -184,6 +166,7 @@ try {
 
   const entry = getCommitInfo(sha);
   if (!entry) throw new Error("No se pudo construir la entrada del commit.");
+
   saveCommitData(entry);
 } catch (error) {
   console.error("Error en el tracker:", error.message);
